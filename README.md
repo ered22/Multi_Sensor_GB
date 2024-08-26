@@ -6,7 +6,7 @@ Source code for performing Machine Learning analysis, using Random Forest and Gr
 Code is written in Python, using data processed in SNAP, and is fully open source.
 
 *********************************
-## The main script is ./RF_Model.py
+## The main script is ./Train_Model.py
 
 Main script to perform random forest and gradient boosting modelling on multi-sensor satellite data, and in-situ data.
 ### Inputs: 
@@ -37,10 +37,38 @@ Random Forest OOB RMSE;			Random Forest OOB R^2 Score;
 Gradient Boosted OOB RMSE;		Gradient Boosted OOB R^2 Score.
 
 ### Outputs:
+all_models.pkl
+     - File containing the Gradient boosting model for prediction intervals
+GB_Model.pkl
+     - File containing the trained gradient boosting model
 Figures: 
-Scatter plots of Actual vs Predicted Water Table Depth values, and histograms of Parameter Signifcance, for both Random Forest and Gradient Boosting techniques. **Note: These plots are simply indicative of model performance, as they use the results of OOB validation for ease of presentation. For predictive modelling, the model is trained on the full dataset (justified by the good cross validation performance)**
+Scatter plots of Actual vs Predicted Water Table Depth values, and histograms of Parameter Signifcance, for both Random Forest and Gradient Boosting techniques. **Note: These plots are simply indicative of model performance, as they use the results of OOB validation for ease of presentation.**
 
-Predicted water table depth values for given bog. Presented as a scatter plot, as it is a convenient way to visualise Lat, Lon, and Z (*WTD*) values in matplotlib.
+*********************************
+## The main script is ./Make_Predictions.py
+
+Makes predictions of wtd at a given site
+
+### Inputs: 
+all_models.pkl
+     - File containing the Gradient boosting model for prediction intervals
+
+GB_Model.pkl
+     - File containing the trained gradient boosting model
+Both of these are saved in the Train_Model.py script
+
+Multi-sensor data in bigtiff format. Calculated, collocated and exported in SNAP. Each level of bigtiff
+contains the following indices, at 30 m pixel spacing ** For the dates to be predicted**:
+    - VV,       NDVI,       NDWI,       STR,       SAVI,       Cloud Mask,       TCG,
+      TWC,      B2,         B3,         B4,        B8,         B11,              B12,         VH
+
+
+### Calculates:
+Predictions of WTD, prediction intervals for predictions
+
+### Outputs:
+Figures: 
+Scatter plots of predicted Water Table Depth values for Gradient Boosting model.
 
 
 *********************************
@@ -95,4 +123,8 @@ Returns variable *DF_4_RF*. A dataframe containing the values to input into ML m
 Column headers: VV, NDVI, NDWI, STR, SAVI, CloudMask, TCG, TCW, Blue, Green, Red, NIR, SWIR1, SWIR2, VH, Distance2Bund, Distance2Dam, PeatDepth
 Final column headers have variables indicated by *cols2drop* removed
 
+
+*********************************
+## *.xml files
+Processing graphs for SNAP processing
 
