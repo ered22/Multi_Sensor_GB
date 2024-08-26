@@ -1,0 +1,312 @@
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="Read">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <useAdvancedOptions>false</useAdvancedOptions>
+      <file>/Users/eoinreddin/OneDrive - National University of Ireland, Galway/Galway_Post_Doc/Raw Files/S2/Zero_Day_Seperation/S2A_MSIL2A_20210403T115401_N0500_R023_T29UNV_20230517T045743.SAFE.zip</file>
+      <copyMetadata>true</copyMetadata>
+      <bandNames/>
+      <pixelRegion>0,0,10980,10980</pixelRegion>
+      <maskNames/>
+    </parameters>
+  </node>
+  <node id="Resample">
+    <operator>Resample</operator>
+    <sources>
+      <sourceProduct refid="Read"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <referenceBand/>
+      <targetWidth/>
+      <targetHeight/>
+      <targetResolution>30</targetResolution>
+      <upsampling>Nearest</upsampling>
+      <downsampling>First</downsampling>
+      <flagDownsampling>First</flagDownsampling>
+      <resamplingPreset/>
+      <bandResamplings/>
+      <resampleOnPyramidLevels>true</resampleOnPyramidLevels>
+    </parameters>
+  </node>
+  <node id="Subset">
+    <operator>Subset</operator>
+    <sources>
+      <sourceProduct refid="Resample"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <sourceBands/>
+      <tiePointGrids/>
+      <region>0,0,0,0</region>
+      <referenceBand/>
+      <geoRegion>POLYGON ((-8.279999732971191 53.415000915527344, -8.220000267028809 53.415000915527344, -8.220000267028809 53.380001068115234, -8.279999732971191 53.380001068115234, -8.279999732971191 53.415000915527344, -8.279999732971191 53.415000915527344))</geoRegion>
+      <subSamplingX>1</subSamplingX>
+      <subSamplingY>1</subSamplingY>
+      <fullSwath>false</fullSwath>
+      <copyMetadata>false</copyMetadata>
+    </parameters>
+  </node>
+  <node id="BandMaths">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="Subset"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands>
+        <targetBand>
+          <name>STR</name>
+          <type>float32</type>
+          <expression>pow((1-B11),2)/(2*B11)</expression>
+          <description/>
+          <unit/>
+          <noDataValue>0.0</noDataValue>
+        </targetBand>
+      </targetBands>
+      <variables/>
+    </parameters>
+  </node>
+  <node id="BandMaths(2)">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="Subset"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands>
+        <targetBand>
+          <name>SAVI</name>
+          <type>float32</type>
+          <expression>1.5*((B8 - B4)/(B8+B4+0.5))</expression>
+          <description/>
+          <unit/>
+          <noDataValue>0.0</noDataValue>
+        </targetBand>
+      </targetBands>
+      <variables/>
+    </parameters>
+  </node>
+  <node id="NdviOp">
+    <operator>NdviOp</operator>
+    <sources>
+      <sourceProduct refid="Subset"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <resampleType>None</resampleType>
+      <upsampling/>
+      <downsampling/>
+      <redFactor>1.0</redFactor>
+      <nirFactor>1.0</nirFactor>
+      <redSourceBand>B4</redSourceBand>
+      <nirSourceBand>B8</nirSourceBand>
+    </parameters>
+  </node>
+  <node id="NdwiOp">
+    <operator>NdwiOp</operator>
+    <sources>
+      <sourceProduct refid="Subset"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <resampleType>None</resampleType>
+      <upsampling/>
+      <downsampling/>
+      <mirFactor>1.0</mirFactor>
+      <nirFactor>1.0</nirFactor>
+      <mirSourceBand>B12</mirSourceBand>
+      <nirSourceBand>B8</nirSourceBand>
+    </parameters>
+  </node>
+  <node id="Write(4)">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="NdviOp"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>/Users/eoinreddin/OneDrive - National University of Ireland, Galway/Galway_Post_Doc/Random_Forest/Temp_Subset_Dir/Subset_S2B_MSIL2A_20211121T114349_N0500_R123_T29UNV_20221231T070251_resampled_ndvi.dim</file>
+      <formatName>BEAM-DIMAP</formatName>
+    </parameters>
+  </node>
+  <node id="Write(5)">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="NdwiOp"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>/Users/eoinreddin/OneDrive - National University of Ireland, Galway/Galway_Post_Doc/Random_Forest/Temp_Subset_Dir/Subset_S2B_MSIL2A_20211121T114349_N0500_R123_T29UNV_20221231T070251_resampled_ndwi.dim</file>
+      <formatName>BEAM-DIMAP</formatName>
+    </parameters>
+  </node>
+  <node id="Write(2)">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="BandMaths"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>/Users/eoinreddin/OneDrive - National University of Ireland, Galway/Galway_Post_Doc/Random_Forest/Temp_Subset_Dir/Subset_S2B_MSIL2A_20211121T114349_N0500_R123_T29UNV_20221231T070251_resampled_STR.dim</file>
+      <formatName>BEAM-DIMAP</formatName>
+    </parameters>
+  </node>
+  <node id="Write(3)">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="BandMaths(2)"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>/Users/eoinreddin/OneDrive - National University of Ireland, Galway/Galway_Post_Doc/Random_Forest/Temp_Subset_Dir/Subset_S2B_MSIL2A_20211121T114349_N0500_R123_T29UNV_20221231T070251_resampled_SAVI.dim</file>
+      <formatName>BEAM-DIMAP</formatName>
+    </parameters>
+  </node>
+  <node id="BandMaths(3)">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="Subset"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands>
+        <targetBand>
+          <name>CloudMask</name>
+          <type>float32</type>
+          <expression>(scl_cloud_high_proba || scl_thin_cirrus || scl_snow_ice || scl_cloud_medium_proba || scl_cloud_shadow)</expression>
+          <description/>
+          <unit/>
+          <noDataValue>0.0</noDataValue>
+        </targetBand>
+      </targetBands>
+      <variables/>
+    </parameters>
+  </node>
+  <node id="Write(6)">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="BandMaths(3)"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>/Users/eoinreddin/OneDrive - National University of Ireland, Galway/Galway_Post_Doc/Random_Forest/Temp_Subset_Dir/Subset_S2B_MSIL2A_20211121T114349_N0500_R123_T29UNV_20221231T070251_resampled_CloudMask.dim</file>
+      <formatName>BEAM-DIMAP</formatName>
+    </parameters>
+  </node>
+  <node id="BandMaths(4)">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="Subset"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands>
+        <targetBand>
+          <name>TCG</name>
+          <type>float32</type>
+          <expression>B2*( 0.2941)+ B3*( 0.243)+ B4*( 0.5424)+ B8*0.7276 + B11*0.0713 + B12*( 0.1608)</expression>
+          <description/>
+          <unit/>
+          <noDataValue>0.0</noDataValue>
+        </targetBand>
+      </targetBands>
+      <variables/>
+    </parameters>
+  </node>
+  <node id="BandMaths(5)">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="Subset"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands>
+        <targetBand>
+          <name>TCW</name>
+          <type>float32</type>
+          <expression>B2*0.1511 + B3*0.1973 + B4*0.3283 + B8*0.3407 + B11*( 0.7117)+ B12*( 0.4559)</expression>
+          <description/>
+          <unit/>
+          <noDataValue>0.0</noDataValue>
+        </targetBand>
+      </targetBands>
+      <variables/>
+    </parameters>
+  </node>
+  <node id="Write(7)">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="BandMaths(4)"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>/Users/eoinreddin/OneDrive - National University of Ireland, Galway/Galway_Post_Doc/Random_Forest/Temp_Subset_Dir/Subset_S2A_MSIL2A_20210403T115401_N0500_R023_T29UNV_20230517T045743_resampled_TCG.dim</file>
+      <formatName>BEAM-DIMAP</formatName>
+    </parameters>
+  </node>
+  <node id="Write(8)">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="BandMaths(5)"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>/Users/eoinreddin/OneDrive - National University of Ireland, Galway/Galway_Post_Doc/Random_Forest/Temp_Subset_Dir/Subset_S2A_MSIL2A_20210403T115401_N0500_R023_T29UNV_20230517T045743_resampled_TCW.dim</file>
+      <formatName>BEAM-DIMAP</formatName>
+    </parameters>
+  </node>
+  <node id="Write">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="Subset"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>/Users/eoinreddin/OneDrive - National University of Ireland, Galway/Galway_Post_Doc/Random_Forest/Temp_Subset_Dir/Subset_S2B_MSIL2A_20211121T114349_N0500_R123_T29UNV_20221231T070251_resampled.dim</file>
+      <formatName>BEAM-DIMAP</formatName>
+    </parameters>
+  </node>
+  <applicationData id="Presentation">
+    <Description/>
+    <node id="Read">
+            <displayPosition x="30.0" y="107.0"/>
+    </node>
+    <node id="Resample">
+      <displayPosition x="130.0" y="112.0"/>
+    </node>
+    <node id="Subset">
+      <displayPosition x="240.0" y="113.0"/>
+    </node>
+    <node id="BandMaths">
+      <displayPosition x="375.0" y="140.0"/>
+    </node>
+    <node id="BandMaths(2)">
+      <displayPosition x="375.0" y="217.0"/>
+    </node>
+    <node id="NdviOp">
+      <displayPosition x="378.0" y="296.0"/>
+    </node>
+    <node id="NdwiOp">
+      <displayPosition x="364.0" y="395.0"/>
+    </node>
+    <node id="Write(4)">
+      <displayPosition x="478.0" y="298.0"/>
+    </node>
+    <node id="Write(5)">
+      <displayPosition x="481.0" y="396.0"/>
+    </node>
+    <node id="Write(2)">
+      <displayPosition x="481.0" y="141.0"/>
+    </node>
+    <node id="Write(3)">
+      <displayPosition x="484.0" y="218.0"/>
+    </node>
+    <node id="BandMaths(3)">
+      <displayPosition x="226.0" y="322.0"/>
+    </node>
+    <node id="Write(6)">
+      <displayPosition x="239.0" y="395.0"/>
+    </node>
+    <node id="BandMaths(4)">
+      <displayPosition x="369.0" y="82.0"/>
+    </node>
+    <node id="BandMaths(5)">
+      <displayPosition x="353.0" y="35.0"/>
+    </node>
+    <node id="Write(7)">
+      <displayPosition x="488.0" y="77.0"/>
+    </node>
+    <node id="Write(8)">
+      <displayPosition x="486.0" y="33.0"/>
+    </node>
+    <node id="Write">
+      <displayPosition x="239.0" y="41.0"/>
+    </node>
+  </applicationData>
+</graph>
