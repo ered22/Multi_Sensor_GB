@@ -51,7 +51,7 @@ def prediction_plots(bogname,predicted_date, Filters, cols2drop, Days2AVG, Filte
         fraction_trues = np.sum(Sphagnum_Water) / (np.sum(Sphagnum_Water) + len(Sphagnum_Water) - np.sum(Sphagnum_Water))
         
         # Make Subplot of figures for multiple dates
-        plot1 = axlist1[idx].scatter(Pred_Lon_Cas,Pred_Lat_Cas, 0.5,NewPredsCas,marker='.',vmin = -60,vmax = 0,cmap = 'YlGnBu')    
+        plot1 = axlist1[idx].scatter(Pred_Lon_Cas,Pred_Lat_Cas, 0.5,NewPredsCas/100,marker='.',vmin = -0.6,vmax = 0,cmap = 'YlGnBu')    
         
         # Create a colormap with two colors, define the bounds of the color categories and normalize
         cmap = mcolors.ListedColormap(['#FFFFCC', '#1C4814'])
@@ -63,13 +63,13 @@ def prediction_plots(bogname,predicted_date, Filters, cols2drop, Days2AVG, Filte
         if idx ==3:
             # Create a colorbar with the correct bounds
             cbar = plt.colorbar(plot2, ticks=[0, 0.5, 1.5])
-            cbar.ax.set_yticklabels(['','< 0.2 m', '> 0.2 m'],rotation = 270,verticalalignment = 'center')  
+            cbar.ax.set_yticklabels(['','0.2 m+', '0–0.2 m'],rotation = 270,verticalalignment = 'center')  
             
         # Label both sets of subplots
         axlist1[idx].set_title(val + '\n' + bogname + " WTD"), axlist2[idx].set_title("Shallow WTD" )
         # Call formatting function
         predicted_scatter(axlist1[idx],axlist2[idx],idx,labellist1[idx],labellist2[idx],plot1,NewPredsCas,fraction_trues,bogname)
-        axlist2[idx].annotate("WTD > 0.2 m: \n" + str(round(np.mean(fraction_trues)*100,2))+"%", xy = (0.05,0.05),xycoords = 'axes fraction')
+        axlist2[idx].annotate("WTD 0–0.2 m: \n" + str(round(np.mean(fraction_trues)*100,2))+"%", xy = (0.05,0.05),xycoords = 'axes fraction')
     # Label Y axis    
     axlist1[0].set_ylabel('Latitude'),  axlist2[0].set_ylabel('Latitude')
     plt.savefig("Output_Figures/"+ bogname +"Predictions.png",dpi = 300)
